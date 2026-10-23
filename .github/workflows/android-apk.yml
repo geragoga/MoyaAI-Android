@@ -1,5 +1,8 @@
 name: Build Android APK
-'on': [push, workflow_dispatch]
+
+'on':
+push:
+workflow_dispatch:
 
 jobs:
 build:
@@ -14,14 +17,14 @@ steps:
 
   - uses: android-actions/setup-android@v3
 
-  - name: Accept licenses
-    run: yes | sdkmanager --licenses
+  - name: Accept Android licenses
+    run: yes | sdkmanager --licenses || true
+
+  - name: Extract project
+    run: unzip -o MoyaAI_Android_GitHub_Upload.zip -d project
 
   - name: Build APK
-    run: |
-      unzip -o MoyaAI_Android_GitHub_Upload.zip -d project
-      cd project
-      gradle --no-daemon assembleDebug
+    run: cd project && gradle --no-daemon assembleDebug
 
   - uses: actions/upload-artifact@v4
     with:
